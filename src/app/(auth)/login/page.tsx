@@ -5,25 +5,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import InputFieldErrorMessage from "@/components/ui/input-error-message";
 import { logInWithGithub, logInWithGoogle } from "@/lib/actions/login-action";
-import sendEmailVerification from "@/lib/email-verification/send-email-verification";
 import { LoginFormMessageState, SendEmailAPIResponse } from "@/next-auth";
 import { loginSchema, LoginSchemaType } from "@/schemas/auth-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@radix-ui/react-label";
 import clsx from "clsx";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { set } from "zod";
-
-type MessageLogin = {
-  message: string | undefined;
-  isSuccess: boolean | undefined;
-};
 
 export default function LoginPage() {
   const router = useRouter();
