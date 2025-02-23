@@ -1,6 +1,6 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
@@ -13,7 +13,7 @@ import updateSessionUser from "./lib/update-users/update-session-user";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "database", maxAge: 2 * 24 * 60 * 60 }, // Reset after 2 days
+  session: { strategy: "jwt", maxAge: 2 * 24 * 60 * 60 }, // Reset after 2 days
   pages: { signIn: "/login" },
   providers: [
     CredentialsProvider({
