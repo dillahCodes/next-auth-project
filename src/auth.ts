@@ -4,7 +4,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import { EmailNotVerifiedError, LoginWrongPassword, MissingEmailOrPasswordError, UserNotFoundError } from "./app/api/auth/_auth-errors/auth-errors";
+import { EmailNotVerifiedError, LoginWrongPassword, MissingEmailOrPasswordError, UserNotFoundError } from "./lib/errors/auth-errors";
 import sendEmailVerification from "./lib/email-verification/send-email-verification";
 import prisma from "./lib/prisma";
 import changeOauthEmailVerified from "./lib/update-users/change-oauth-email-verified";
@@ -13,7 +13,7 @@ import updateSessionUser from "./lib/update-users/update-session-user";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt", maxAge: 2 * 24 * 60 * 60 }, // Reset after 2 days
+  session: { strategy: "database", maxAge: 2 * 24 * 60 * 60 }, // Reset after 2 days
   pages: { signIn: "/login" },
   providers: [
     CredentialsProvider({
@@ -28,7 +28,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         // Search for user by email
         const user = await prisma.user.findUnique({
           where: { email },
-          select: { id: true, password: true, email: true, name: true, emailVerified: true },
+          select: { id: true, password: true, email: true, name: true, emailVerified: true, image: true },
         });
 
         if (!user) throw new UserNotFoundError(email);
@@ -47,7 +47,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
 
         // Return user details if authorization is successful
-        return user;
+        return { email: user.email, name: user.name, id: user.id, image: user.image };
       },
     }),
     GitHub({
