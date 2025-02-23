@@ -30,6 +30,9 @@ pnpm install
 # Create a `.env` file and add the necessary configurations, including
 # database credentials and authentication provider keys.
 
+# generate prisma client
+pnpm prisma generate
+
 # Run the development server
 pnpm run dev
 
