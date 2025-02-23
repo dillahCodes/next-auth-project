@@ -5,7 +5,6 @@ export async function middleware(request: NextRequest) {
   return applyMiddlewares(request);
 }
 
-// Atur agar middleware berjalan di semua route
 export const config = {
   matcher: "/:path*",
 };
